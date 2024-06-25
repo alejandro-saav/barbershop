@@ -7,5 +7,5 @@ export const permanent_marker = Permanent_Marker({
 });
 export const roboto = Roboto({
   subsets: ["latin"],
-  weight: ["400"],
+  weight: ["400", "700"],
 });

@@ -40,7 +40,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="w-full h-[10%] flex justify-around border-b-2 border-amber-400">
+        <div className="w-full h-14 flex justify-around border-b-2 border-amber-400">
           {/* <img
           src="../public/images/download3.png"
           className="object-fill rounded-full cursor-pointer"
