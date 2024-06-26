@@ -1,3 +1,4 @@
+"use client";
 import curlLeft from "@/public/images/curlLeft.svg";
 import curlRight from "@/public/images/curlRight.svg";
 import Image from "next/image";
@@ -6,8 +7,31 @@ import corteIMG from "@/public/images/corte.jpg";
 import barbaIMG from "@/public/images/barba.jpg";
 import afeitarIMG from "@/public/images/afeitar.jpg";
 import tratamientoIMG from "@/public/images/tratamientoCapilar.jpg";
+import { useState } from "react";
 
 export default function Servicios() {
+  const [servicioSeleccionado, setServicioSeleccionado] = useState(0);
+  const images = [corteIMG, barbaIMG, afeitarIMG, tratamientoIMG];
+  const servicios = [
+    {
+      servicio: "Corte de cabello",
+      descripcion:
+        "Estilos modernos y clásicos, adaptados a las preferencias del cliente.",
+    },
+    {
+      servicio: "Afeitado",
+      descripcion: "Afeitado tradicional con navaja y toalla caliente.",
+    },
+    {
+      servicio: "Arreglo de barba",
+      descripcion: "Recorte y diseño de barba para mantenerla bien cuidada.",
+    },
+    {
+      servicio: "Tratamientos capilares",
+      descripcion:
+        "Servicios de cuidado del cabello como lavados y tratamientos de hidratación.",
+    },
+  ];
   return (
     <div className="w-full">
       <div
@@ -25,41 +49,30 @@ export default function Servicios() {
             profesional, brindando una experiencia de barbería excepcional para
             hombres de todas las edades.
           </p>
-          <div className="flex justify-center gap-10">
-            <div className="bg-[#181818] p-4 w-52 rounded-lg border-2 border-[#000000]">
-              <h1 className="font-bold">Corte de cabello</h1>
-              <p className="text-sm mt-2 text-[#cccccc]">
-                Estilos modernos y clásicos, adaptados a las preferencias del
-                cliente.
-              </p>
-            </div>
-            <div className="bg-[#181818] p-4 w-52 rounded-lg border-2  border-[#000000]">
-              <h1 className="font-bold">Afeitado</h1>
-              <p className="text-sm mt-2 text-[#cccccc]">
-                Afeitado tradicional con navaja y toalla caliente.
-              </p>
-            </div>
-          </div>
-          <div className="flex justify-center gap-10 mt-4">
-            <div className="bg-[#181818] p-4 w-52 rounded-lg border-2  border-[#000000]">
-              <h1 className="font-bold">Arreglo de barba</h1>
-              <p className="text-sm mt-2 text-[#cccccc]">
-                Recorte y diseño de barba para mantenerla bien cuidada.
-              </p>
-            </div>
-            <div className="bg-[#181818] p-4 w-52 rounded-lg border-2  border-[#000000]">
-              <h1 className="font-bold">Tratamientos capilares</h1>
-              <p className="text-sm mt-2 text-[#cccccc]">
-                Servicios de cuidado del cabello como lavados y tratamientos de
-                hidratación.
-              </p>
-            </div>
+          <div className="grid grid-rows-2 grid-cols-2 justify-items-center content-center gap-10">
+            {servicios.map((item, index) => {
+              return (
+                <div
+                  key={index}
+                  className={`bg-[#181818] p-4 w-52 rounded-lg border-2 border-[#000000] shadow-2xl cursor-pointer hover:border-white ${
+                    index === servicioSeleccionado ? "border-white" : ""
+                  } transition-all ease-linear`}
+                  onClick={() => setServicioSeleccionado(index)}
+                >
+                  <h1 className="font-bold">{item.servicio}</h1>
+                  <p className="text-sm mt-2 text-[#cccccc]">
+                    {item.descripcion}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </div>
         <div className="w-full p-5 px-16 flex justify-start">
           <Image
-            src={corteIMG}
-            className="object-fill w-96 h-96 rounded-lg border-4 border-[#a16a1b]"
+            src={images[servicioSeleccionado]}
+            alt={`Imagen de ${servicios[servicioSeleccionado]}`}
+            className="object-fill w-96 h-96 rounded-lg border-4 border-[#a16a1b] shadow-2xl"
           />
         </div>
       </div>
