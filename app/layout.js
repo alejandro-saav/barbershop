@@ -2,9 +2,10 @@ import Image from "next/image";
 import { CiFacebook } from "react-icons/ci";
 import { FaInstagram } from "react-icons/fa";
 import { TbBrandTiktok } from "react-icons/tb";
-import { inter } from "./fonts";
+import { inter, roboto } from "./fonts";
 import "./globals.css";
 import logoIMG from "@/public/images/download3.png";
+import Link from "next/link";
 
 export const metadata = {
   title: "BarberShop",
@@ -41,24 +42,49 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <div className="w-full h-14 flex justify-around border-b-2 border-amber-400">
-          {/* <img
-          src="../public/images/download3.png"
-          className="object-fill rounded-full cursor-pointer"
-          width={160}
-        /> */}
           <Image
             src={logoIMG}
             alt="Logo image of the company"
             className="object-fill rounded-full cursor-pointer h-16 w-28"
           />
           <ul className="w-1/3 flex justify-between content-center flex-wrap ml-2 select-none">
-            {lista.map((item, index) => {
-              return (
-                <li>
-                  <a className="cursor-pointer hover:text-sky-600">{item}</a>
-                </li>
-              );
-            })}
+            <li>
+              <Link className="cursor-pointer hover:text-sky-600" href="/">
+                Inicio
+              </Link>
+            </li>
+            <li>
+              <Link
+                className="cursor-pointer hover:text-sky-600"
+                href="/Servicios"
+              >
+                Servicios
+              </Link>
+            </li>
+            <li>
+              <Link
+                className="cursor-pointer hover:text-sky-600"
+                href="/Productos"
+              >
+                Productos
+              </Link>
+            </li>
+            <li>
+              <Link
+                className="cursor-pointer hover:text-sky-600"
+                href="/Nosotros"
+              >
+                Sobre nosotros
+              </Link>
+            </li>
+            <li>
+              <Link
+                className="cursor-pointer hover:text-sky-600"
+                href="/Contactanos"
+              >
+                Contactanos
+              </Link>
+            </li>
           </ul>
           <ul className="flex justify-between content-center flex-wrap gap-4">
             {redes.map((item, index) => {

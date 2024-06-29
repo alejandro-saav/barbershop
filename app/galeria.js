@@ -5,9 +5,30 @@ import curlLeft from "@/public/images/curlLeft.svg";
 import curlRight from "@/public/images/curlRight.svg";
 import { PiCaretLeftBold, PiCaretRightBold } from "react-icons/pi";
 import { permanent_marker } from "./fonts";
-import { useState } from "react";
+import { useState, useRef } from "react";
+
 export default function Galeria() {
   const [selectedImage, setSelectedImage] = useState(null);
+  const scrollRef = useRef(null);
+
+  function scrollLeft() {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({
+        left: -300,
+        behavior: "smooth",
+      });
+    }
+  }
+
+  function scrollRight() {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({
+        left: 300,
+        behavior: "smooth",
+      });
+    }
+  }
+
   function Modal({ src, onClose }) {
     document.body.setAttribute("style", "overflow:hidden;");
     return (
@@ -40,11 +61,15 @@ export default function Galeria() {
         </div>
       </div>
       <div className="flex justify-center w-full">
-        <PiCaretLeftBold className="text-7xl text-slate-600 self-center cursor-pointer opacity-75" />
-        <div className="h-52 w-2/3 overflow-scroll flex gap-2">
+        <PiCaretLeftBold
+          onClick={scrollLeft}
+          className="text-7xl text-slate-600 self-center cursor-pointer opacity-75"
+        />
+        <div ref={scrollRef} className="h-52 w-2/3 overflow-scroll flex gap-2">
           {galeria_imagenes.map((item, index) => {
             return (
               <Image
+                key={index}
                 src={item}
                 width={500}
                 height={500}
@@ -54,7 +79,10 @@ export default function Galeria() {
             );
           })}
         </div>
-        <PiCaretRightBold className="text-7xl text-slate-600 self-center cursor-pointer opacity-75" />
+        <PiCaretRightBold
+          onClick={scrollRight}
+          className="text-7xl text-slate-600 self-center cursor-pointer opacity-75"
+        />
       </div>
       {selectedImage && (
         <Modal
@@ -65,7 +93,6 @@ export default function Galeria() {
           }}
         />
       )}
-      <div>HEHLHALSASKLJDSAKLJD</div>
     </div>
   );
 }
