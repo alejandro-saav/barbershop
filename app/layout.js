@@ -89,7 +89,7 @@ export default function RootLayout({ children }) {
           <ul className="flex justify-between content-center flex-wrap gap-4">
             {redes.map((item, index) => {
               return (
-                <li className={item.class}>
+                <li className={item.class} key={index}>
                   <a target="_blank" href={item.link}>
                     {item.icon}
                   </a>

@@ -51,23 +51,23 @@ export default function Servicios() {
     },
   ];
   return (
-    <div className="flex justify-center bg-black h-screen">
-      <div className="w-1/3 grow flex justify-center border-r-2 border-amber-600">
+    <div className="flex justify-center bg-black p-2 overflow-hidden">
+      <div className="w-1/3 grow flex justify-center border-r-2 border-amber-600 h-[90%]">
         <Image src={beardManIMG} className="" />
       </div>
-      <div className="w-2/3 text-4xl grow p-4 relative">
+      <div className="w-2/3 text-4xl grow p-4 relative h-[90%]">
         <h1
           className={`${permanent_marker.className} text-5xl mt-6 text-amber-600`}
         >
           Da Corner BarberShop Servicios
         </h1>
-        <h1 className={`${permanent_marker.className} text-4xl`}>
+        <h1 className={`${permanent_marker.className} text-4xl text-amber-600`}>
           Lista de precios
         </h1>
         <ul>
           {servicios.map((item, index) => {
             return (
-              <li className={`${roboto.className} text-xl`}>
+              <li className={`${roboto.className} text-xl`} key={index}>
                 <span className="mr-5 text-amber-300">{item.nombre}:</span>
                 <span>{item.precio}</span>
               </li>
@@ -79,7 +79,10 @@ export default function Servicios() {
         >
           Agenda tu cita!
         </button>
-        <Image src={barberIcon} className="absolute right-10 top-1/2" />
+        <Image
+          src={barberIcon}
+          className="absolute right-16 bottom-1/2 translate-y-1/2 w-96 h-96"
+        />
       </div>
     </div>
   );
