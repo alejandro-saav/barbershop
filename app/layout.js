@@ -72,9 +72,9 @@ export default function RootLayout({ children }) {
             <li>
               <Link
                 className="cursor-pointer hover:text-sky-600"
-                href="/Nosotros"
+                href="/Reserva"
               >
-                Sobre nosotros
+                Reservar Cita
               </Link>
             </li>
             <li>
