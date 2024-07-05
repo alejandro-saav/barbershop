@@ -14,6 +14,15 @@ import trece from "/public/images/fotosGaleria/13.jpg";
 import catorce from "/public/images/fotosGaleria/14.jpg";
 import quince from "/public/images/fotosGaleria/15.jpg";
 
+// Imagenes barberos
+import barbero_0 from "@/public/images/barberosCaras/barbero_0.png";
+import barbero_1 from "@/public/images/barberosCaras/barbero_1.png";
+import barbero_2 from "@/public/images/barberosCaras/barbero_2.png";
+import barbero_3 from "@/public/images/barberosCaras/barbero_3.png";
+import barbero_4 from "@/public/images/barberosCaras/barbero_4.png";
+import barbero_5 from "@/public/images/barberosCaras/barbero_5.png";
+import barbero_6 from "@/public/images/barberosCaras/barbero_6.png";
+
 const galeria_imagenes = [
   una,
   dos,
@@ -31,4 +40,14 @@ const galeria_imagenes = [
   catorce,
   quince,
 ];
+
 export default galeria_imagenes;
+export const fotos_barberos = [
+  barbero_0,
+  barbero_1,
+  barbero_2,
+  barbero_3,
+  barbero_4,
+  barbero_5,
+  barbero_6,
+];
