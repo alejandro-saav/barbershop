@@ -3,9 +3,8 @@ import Image from "next/image";
 import { useState } from "react";
 import { IoIosPeople } from "react-icons/io";
 
-export default function Barbero({ barberos }) {
+export default function Barbero({ barberos, setCheckedBarber }) {
   const [barberoSeleccionado, setBarberoSeleccionado] = useState(null);
-  console.log(barberoSeleccionado);
   return (
     <div className="grid grid-cols-3 gap-y-6 w-full mt-4">
       {barberos.map((item, index) => {
@@ -18,7 +17,10 @@ export default function Barbero({ barberos }) {
                 : "bg-slate-900"
             }`}
             key={index}
-            onClick={() => setBarberoSeleccionado(index)}
+            onClick={() => {
+              setBarberoSeleccionado(index);
+              setCheckedBarber(item.nombre);
+            }}
           >
             <div className="border-2 border-orange-500 w-20 h-20 flex justify-center items-center rounded-full shadow-md shadow-orange-500 mb-1 relative">
               {item.foto === "icono" ? (
