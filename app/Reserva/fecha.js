@@ -3,6 +3,7 @@ import { roboto } from "../fonts";
 import { useState } from "react";
 export default function Fecha({ setTiempo }) {
   const [horaSeleccionada, setHoraSeleccionada] = useState(null);
+  const [diaSeleccionado, setDiaSeleccionado] = useState(null);
   const diaDeLaSemana = new Date().getDay();
   const diaNumero = new Date().getDate();
   const mesHoy = new Date().getMonth();
@@ -66,10 +67,15 @@ export default function Fecha({ setTiempo }) {
       <div className="flex justify-around px-10 mt-2">
         {siguientesCincoDias.map((item, index) => (
           <div
-            className="flex flex-col justify-center items-center cursor-pointer group"
+            className={`flex flex-col justify-center items-center cursor-pointer group`}
             key={index}
+            onClick={() => setDiaSeleccionado(index)}
           >
-            <div className="w-16 cursor-pointer text-center py-4 rounded-full mb-2 shadow-sm shadow-black bg-[#151515]  group-hover:bg-[#262626]">
+            <div
+              className={`w-16 cursor-pointer text-center py-4 rounded-full mb-2 shadow-sm shadow-black transition-all duration-300 group-hover:bg-[#262626]  ${
+                index === diaSeleccionado ? "bg-orange-500" : "bg-[#151515]"
+              }`}
+            >
               {diaNumero + index}
             </div>
             <div className="text-orange-500 font-bold group-hover:text-orange-700">
