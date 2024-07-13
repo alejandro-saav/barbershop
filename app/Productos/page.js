@@ -20,7 +20,10 @@ export default async function Productos() {
       <div className="grid grid-cols-4 p-2 justify-center items-center shadow-2xl mx-14">
         {productos.map((item, index) => {
           return (
-            <div className="flex flex-col justify-end items-center w-64 h-72 m-4 relative shadow-2xl border-4 group cursor-pointer">
+            <div
+              className="flex flex-col justify-end items-center w-64 h-72 m-4 relative shadow-2xl border-4 group cursor-pointer"
+              key={index}
+            >
               <div className="w-64 h-56 relative shadow-xl shadow-white group-hover:opacity-25">
                 <ProductoImagen
                   imagen={item.imagen}
