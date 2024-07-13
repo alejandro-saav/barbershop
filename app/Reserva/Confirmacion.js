@@ -1,9 +1,10 @@
 "use client";
 import axios from "axios";
-import { FormEvent, useState } from "react";
+import { useState, useRef } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 export default function Home() {
+  // const emailRef = useRef();
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleSubmit = async (e) => {
@@ -16,8 +17,6 @@ export default function Home() {
     }
 
     const gRecaptchaToken = await executeRecaptcha("inquirySubmit");
-
-    ///
 
     const response = await axios({
       method: "post",
@@ -32,18 +31,33 @@ export default function Home() {
     });
 
     if (response.data.success === true) {
-      console.log(`Success with score: ${response.data.score}`);
-      setSubmit("ReCaptcha Verified and Form Submitted!");
+      setSubmit("Verificado y enviado!");
+      const emailResponse = await axios({
+        method: "post",
+        url: "/api/sendEmail",
+        data: {
+          emailTo: e.target.email.value,
+          referencia: e.target.referencia.value,
+        },
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(emailResponse);
     } else {
-      console.log(`Failure with score: ${response.data.score}`);
-      setSubmit("Failed to verify recaptcha! You must be a robot!");
+      setSubmit("Error! intenta de nuevo");
     }
   };
 
   const [submit, setSubmit] = useState("");
   return (
     <main>
-      <h1 className="text-xl text-center">Nextjs 14 Recaptcha (V3) tutorial</h1>
+      <h1 className="text-xl text-center">
+        Porfavor realiza tu pago a la siguiente cuenta de nequi: 3002515632.
+        Escribe la referencia en el cuadro de abajo para finalizar el proceso y
+        tu email donde se enviara la confirmacion de la cita programada.
+      </h1>
       <br />
       <form
         className="flex flex-col justify-start items-center gap-4"
@@ -51,22 +65,21 @@ export default function Home() {
       >
         <input
           type="text"
-          placeholder="First Name"
+          name="referencia"
+          placeholder="Escribe la referencia aqui"
           className="border p-4 rounded"
-        />
-        <input
-          type="text"
-          placeholder="Last Name"
-          className="border p-4 rounded"
+          required
         />
         <input
           type="email"
-          placeholder="Email"
+          name="email"
+          placeholder="Escribe tu email aqui:"
           className="border p-4 rounded"
+          required
         />
         <input
           type="submit"
-          className="border p-4 text-lg rounded bg-blue-500"
+          className="border px-10 py-1 text-lg rounded bg-orange-700 cursor-pointer m-2"
         />
       </form>
       {submit && <p className="text-lg text-center">{submit}</p>}

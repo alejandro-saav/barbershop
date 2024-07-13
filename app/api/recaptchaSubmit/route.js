@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 
 export async function POST(request, response) {
-  const secretKey = process.env.SITE_KEY;
+  const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY;
 
   const postData = await request.json();
 

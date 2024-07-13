@@ -87,7 +87,9 @@ export default function PanelDerecho({
           })}
         </div>
         <button
-          onClick={() => setPestana((prev) => prev + 1)}
+          onClick={() =>
+            setPestana((prev) => (prev === 3 ? (prev = 0) : prev + 1))
+          }
           className="w-full px-8 py-2 mt-2 bg-orange-600 rounded-md text-lg font-bold hover:bg-orange-700 transition-all duration-200"
         >
           Siguiente {"->"}

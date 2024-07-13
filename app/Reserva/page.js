@@ -12,10 +12,7 @@ import {
   sumTimeByCondition,
   calcularTiempoEnHorasMinutos,
 } from "./UtilityFunctions";
-import {
-  GoogleReCaptchaProvider,
-  GoogleReCaptcha,
-} from "react-google-recaptcha-v3";
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import Confirmacion from "./Confirmacion";
 
 export default function Reserva() {
@@ -57,8 +54,9 @@ export default function Reserva() {
       prevCheckedItems.map((item, i) => (i === index ? !item : item))
     );
   };
+  // console.log(process.env.SITE_KEY);
   return (
-    <GoogleReCaptchaProvider reCaptchaKey={process.env.SITE_KEY}>
+    <GoogleReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_SITE_KEY}>
       <div>
         <BarraNavegacion
           pestana={pestana}
