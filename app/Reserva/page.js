@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { roboto } from "../fonts";
 import Servicios from "./Servicios";
 import Barbero from "./Barbero";
@@ -14,38 +14,59 @@ import {
 } from "./UtilityFunctions";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import Confirmacion from "./Confirmacion";
+import { fetchServiciosYBarberos } from "../lib/data";
 
 export default function Reserva() {
+  const [servicios, setServicios] = useState([]);
+  const [barberos, setBarberos] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/fetchServicios");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setServicios(data.servicios);
+        setBarberos(data.barberos);
+        setCheckedItems(new Array(data.servicios.length).fill(false));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
   const [pestana, setPestana] = useState(2);
   const [tiempo, setTiempo] = useState("");
-  const servicios = [
-    { nombre: "Corte Adulto", tiempo: "60min", precio: "15.000" },
-    { nombre: "Clasico o Niño", tiempo: "45min", precio: "14.000" },
-    { nombre: "Corte + Barba", tiempo: "30min", precio: "22.000" },
-    { nombre: "Corte + Cejas", tiempo: "30min", precio: "17.000" },
-    { nombre: "Delineado de Barba", tiempo: "90min", precio: "8.000" },
-    { nombre: "Corte + Barba + Cejas", tiempo: "45min", precio: "24.000" },
-    { nombre: "Depilacion Cera", tiempo: "30min", precio: "7.000" },
-    { nombre: "Oidos * Nariz * Cejas", tiempo: "45min", precio: "4.000" },
-    { nombre: "Marco Barba + Cejas", tiempo: "30min", precio: "10.000" },
-    { nombre: "Mascarilla", tiempo: "45min", precio: "16.000" },
-    { nombre: "Exfoliacion", tiempo: "30min", precio: "25.000" },
-  ];
-  const barberos = [
-    { foto: "icono", nombre: "Cualquier Especialista" },
-    { foto: fotos_barberos[0], nombre: "Dante" },
-    { foto: fotos_barberos[1], nombre: "Oskar" },
-    { foto: fotos_barberos[2], nombre: "Alejandro" },
-    { foto: fotos_barberos[3], nombre: "Johan" },
-    { foto: fotos_barberos[4], nombre: "Valentina" },
-    { foto: fotos_barberos[5], nombre: "Armando" },
-  ];
+  // const servicios = [
+  //   { nombre: "Corte Adulto", tiempo: "60min", precio: "15.000" },
+  //   { nombre: "Clasico o Niño", tiempo: "45min", precio: "14.000" },
+  //   { nombre: "Corte + Barba", tiempo: "30min", precio: "22.000" },
+  //   { nombre: "Corte + Cejas", tiempo: "30min", precio: "17.000" },
+  //   { nombre: "Delineado de Barba", tiempo: "90min", precio: "8.000" },
+  //   { nombre: "Corte + Barba + Cejas", tiempo: "45min", precio: "24.000" },
+  //   { nombre: "Depilacion Cera", tiempo: "30min", precio: "7.000" },
+  //   { nombre: "Oidos * Nariz * Cejas", tiempo: "45min", precio: "4.000" },
+  //   { nombre: "Marco Barba + Cejas", tiempo: "30min", precio: "10.000" },
+  //   { nombre: "Mascarilla", tiempo: "45min", precio: "16.000" },
+  //   { nombre: "Exfoliacion", tiempo: "30min", precio: "25.000" },
+  // ];
+  // const barberos = [
+  //   { foto: "icono", nombre: "Cualquier Especialista" },
+  //   { foto: fotos_barberos[0], nombre: "Dante" },
+  //   { foto: fotos_barberos[1], nombre: "Oskar" },
+  //   { foto: fotos_barberos[2], nombre: "Alejandro" },
+  //   { foto: fotos_barberos[3], nombre: "Johan" },
+  //   { foto: fotos_barberos[4], nombre: "Valentina" },
+  //   { foto: fotos_barberos[5], nombre: "Armando" },
+  // ];
 
   const [checkedItems, setCheckedItems] = useState(
     new Array(servicios.length).fill(false)
   );
-  const [checkedBarber, setCheckedBarber] = useState("");
-
+  const [checkedBarber, setCheckedBarber] = useState([]);
+  console.log(checkedBarber);
   const totalTime = sumTimeByCondition(servicios, checkedItems);
   const tiempoEnHorasMinutos = calcularTiempoEnHorasMinutos(totalTime);
   const endTime = calculateEndTime(tiempo, totalTime);
@@ -54,7 +75,6 @@ export default function Reserva() {
       prevCheckedItems.map((item, i) => (i === index ? !item : item))
     );
   };
-  // console.log(process.env.SITE_KEY);
   return (
     <GoogleReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_SITE_KEY}>
       <div>
@@ -89,7 +109,14 @@ export default function Reserva() {
                 setCheckedBarber={setCheckedBarber}
               />
             )}
-            {pestana === 2 && <Fecha setTiempo={setTiempo} />}
+            {pestana === 2 && (
+              <Fecha
+                setTiempo={setTiempo}
+                id_barbero={
+                  checkedBarber.length > 0 ? checkedBarber[0].id_barbero : ""
+                }
+              />
+            )}
             {pestana === 3 && <Confirmacion />}
           </div>
           <PanelDerecho
@@ -97,7 +124,9 @@ export default function Reserva() {
             setPestana={setPestana}
             servicios={servicios}
             checkedItems={checkedItems}
-            checkedBarber={checkedBarber}
+            checkedBarber={
+              checkedBarber.length > 0 ? checkedBarber[0].nombre_barbero : ""
+            }
             endTime={endTime}
             tiempoEnHorasMinutos={tiempoEnHorasMinutos}
           />

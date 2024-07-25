@@ -72,16 +72,18 @@ export default function PanelDerecho({
                 <div className="flex justify-between" key={index}>
                   <div>
                     <h1 className="font-light text-orange-500">
-                      {item.nombre}
+                      {item.nombre.replaceAll("_", " ")}
                     </h1>
                     <h1 className="font-light text-orange-300">
-                      {`${item.tiempo} ${checkedBarber != "" ? "con " : ""}`}{" "}
+                      {`${item.duracion}min ${
+                        checkedBarber != "" ? "con " : ""
+                      }`}{" "}
                       <span className="text-white font-light">
                         {checkedBarber}
                       </span>
                     </h1>
                   </div>
-                  <div>{item.precio}</div>
+                  <div>{item.precio.toLocaleString("es-CO")}</div>
                 </div>
               );
           })}

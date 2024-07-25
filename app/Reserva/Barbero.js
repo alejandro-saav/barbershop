@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { IoIosPeople } from "react-icons/io";
+import { CldImage } from "next-cloudinary";
 
 export default function Barbero({ barberos, setCheckedBarber }) {
   const [barberoSeleccionado, setBarberoSeleccionado] = useState(null);
@@ -19,22 +20,22 @@ export default function Barbero({ barberos, setCheckedBarber }) {
             key={index}
             onClick={() => {
               setBarberoSeleccionado(index);
-              setCheckedBarber(item.nombre);
+              setCheckedBarber([item]);
             }}
           >
             <div className="border-2 border-orange-500 w-20 h-20 flex justify-center items-center rounded-full shadow-md shadow-orange-500 mb-1 relative">
-              {item.foto === "icono" ? (
+              {item.id_imagen === null ? (
                 <IoIosPeople className="text-3xl" />
               ) : (
-                <Image
+                <CldImage
                   fill
-                  src={item.foto}
+                  src={item.id_imagen}
                   className="rounded-full group-hover:contrast-125"
-                  alt={`Foto del barbero ${item.nombre}`}
+                  alt={`Foto del barbero ${item.nombre_barbero}`}
                 />
               )}
             </div>
-            <h1 className="text-center">{item.nombre}</h1>
+            <h1 className="text-center">{item.nombre_barbero}</h1>
           </div>
         );
       })}

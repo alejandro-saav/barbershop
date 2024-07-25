@@ -36,8 +36,9 @@ export default function Home() {
         method: "post",
         url: "/api/sendEmail",
         data: {
-          emailTo: e.target.email.value,
-          referencia: e.target.referencia.value,
+          email: "oacastro999@gmail.com",
+          subject: "Subject test",
+          message: "Message test",
         },
         headers: {
           Accept: "application/json, text/plain, */*",

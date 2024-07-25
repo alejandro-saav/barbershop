@@ -1,27 +1,35 @@
-import EmailTemplate from "@/utilitys/email-template";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: "oskarkastro999@gmail.com", // Your Gmail address
+    pass: "MODOrokudo103", // Your Gmail password or app-specific password
+  },
+  debug: true,
+  logger: true,
+  connectionTimeout: 90000,
+});
 
-export async function POST(request) {
+export async function POST(req, res) {
+  const { email, subject, message } = await req.json();
+
+  const mailOptions = {
+    from: "oskarkastro999@gmail.com",
+    to: email,
+    subject: subject,
+    text: message,
+  };
+
   try {
-    const { emailTo, referencia } = await request.json();
-
-    const { data, error } = await resend.emails.send({
-      from: "oacastro999@gmail.com",
-      to: [emailTo],
-      subject: "Hello world",
-      react: <EmailTemplate firstName="Oskar" />,
-    });
-
-    if (error) {
-      console.error("Resend API error:", error);
-      return new Response(JSON.stringify({ error }), { status: 500 });
-    }
-
-    return new Response(JSON.stringify(data));
+    console.log(res);
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: "Email sent successfully!" });
   } catch (error) {
-    console.error("Catch block error:", error);
-    return new Response(JSON.stringify({ error }), { status: 500 });
+    console.error(error);
+    res.status(500).json({ message: "Error sending email." });
   }
 }

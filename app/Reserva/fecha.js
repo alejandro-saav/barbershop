@@ -1,7 +1,8 @@
 "use client";
 import { roboto } from "../fonts";
 import { useState } from "react";
-export default function Fecha({ setTiempo }) {
+export default function Fecha({ setTiempo, id_barbero }) {
+  console.log(id_barbero);
   const [horaSeleccionada, setHoraSeleccionada] = useState(null);
   const [diaSeleccionado, setDiaSeleccionado] = useState(null);
   const diaDeLaSemana = new Date().getDay();
@@ -59,6 +60,7 @@ export default function Fecha({ setTiempo }) {
     return intervals;
   }
   const horas = getHalfHourIntervals();
+  function consultarDisponibilidadHorarios(id_barbero, diaSeleccionado) {}
   return (
     <div className={`${roboto.className} mt-4 font-thin`}>
       <h1 className="text-white text-sm">
@@ -69,10 +71,13 @@ export default function Fecha({ setTiempo }) {
           <div
             className={`flex flex-col justify-center items-center cursor-pointer group`}
             key={index}
-            onClick={() => setDiaSeleccionado(index)}
+            onClick={() => {
+              setDiaSeleccionado(index);
+              consultarDisponibilidadHorarios(id_barbero, diaNumero + index);
+            }}
           >
             <div
-              className={`w-16 cursor-pointer text-center py-4 rounded-full mb-2 shadow-sm shadow-black transition-all duration-300 group-hover:bg-[#262626]  ${
+              className={`w-16 cursor-pointer text-center py-4 rounded-full mb-2 shadow-sm shadow-black  group-hover:bg-[#262626]  ${
                 index === diaSeleccionado ? "bg-orange-500" : "bg-[#151515]"
               }`}
             >
@@ -84,7 +89,11 @@ export default function Fecha({ setTiempo }) {
           </div>
         ))}
       </div>
-      <div className="h-96 overflow-auto mt-4">
+      <div
+        className={`h-96 overflow-auto mt-4 ${
+          diaSeleccionado != null ? "block" : "hidden"
+        }`}
+      >
         {horas.map((item, index) => {
           return (
             <div

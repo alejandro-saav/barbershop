@@ -19,10 +19,10 @@ export default function Servicios({
     >
       <div className="grow">
         <h1 className="text-orange-500 pl-2 font-bold text-lg">
-          {item.nombre}
+          {item.nombre.replaceAll("_", " ")}
         </h1>
-        <h4 className="text-sm pl-2">{item.tiempo}</h4>
-        <h4 className="text-sm pl-2">{item.precio}</h4>
+        <h4 className="text-sm pl-2">{item.duracion}min</h4>
+        <h4 className="text-sm pl-2">${item.precio.toLocaleString("es-CO")}</h4>
       </div>
       <div className="grow self-center text-end mr-6 justify-self-end">
         <input type="checkbox" checked={isChecked} readOnly />

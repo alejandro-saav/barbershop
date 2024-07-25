@@ -40,9 +40,8 @@ export function sumTimeByCondition(timesArray, conditionsArray) {
 
   for (let i = 0; i < timesArray.length; i++) {
     if (conditionsArray[i]) {
-      const timeStr = timesArray[i].tiempo;
-      const timeInMinutes = parseInt(timeStr.replace("min", ""));
-      totalTime += timeInMinutes;
+      const timeStr = timesArray[i].duracion;
+      totalTime += timeStr;
     }
   }
 
