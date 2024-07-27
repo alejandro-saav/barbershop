@@ -14,11 +14,12 @@ import {
 } from "./UtilityFunctions";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import Confirmacion from "./Confirmacion";
-import { fetchServiciosYBarberos } from "../lib/data";
-
 export default function Reserva() {
   const [servicios, setServicios] = useState([]);
   const [barberos, setBarberos] = useState([]);
+  const [diaSeleccionado, setDiaSeleccionado] = useState(null);
+  const [horaSeleccionada, setHoraSeleccionada] = useState(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -115,9 +116,23 @@ export default function Reserva() {
                 id_barbero={
                   checkedBarber.length > 0 ? checkedBarber[0].id_barbero : ""
                 }
+                diaSeleccionado={diaSeleccionado}
+                setDiaSeleccionado={setDiaSeleccionado}
+                horaSeleccionada={horaSeleccionada}
+                setHoraSeleccionada={setHoraSeleccionada}
               />
             )}
-            {pestana === 3 && <Confirmacion />}
+            {pestana === 3 && (
+              <Confirmacion
+                diaSeleccionado={diaSeleccionado}
+                horaSeleccionada={horaSeleccionada}
+                id_barbero={
+                  checkedBarber.length > 0 ? checkedBarber[0].id_barbero : ""
+                }
+                servicios={servicios}
+                checkedItems={checkedItems}
+              />
+            )}
           </div>
           <PanelDerecho
             tiempo={tiempo}

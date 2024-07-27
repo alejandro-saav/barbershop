@@ -36,3 +36,21 @@ export async function fetchDisponibilidadHorarios(id_barbero, diaSeleccionado) {
     throw new Error("Error al consultar disponibilidad de horarios.");
   }
 }
+
+export async function insertarCita(datosCita) {
+  try {
+    // Perform the insert operation and return the ID
+    const result = await sql`
+      INSERT INTO citas (correo_cliente, fecha_cita, id_estado, id_barbero, referencia_pago) 
+      VALUES (${datosCita.email}, ${datosCita.fecha}, 1, ${datosCita.id_barbero}, ${datosCita.referencia_pago}) 
+      RETURNING id;
+    `;
+
+    // Retrieve the ID of the newly inserted row
+    const idNuevaCita = result.rows[0].id;
+    return idNuevaCita;
+  } catch (error) {
+    console.error("Error inserting cita:", error);
+    throw new Error("Error inserting cita");
+  }
+}

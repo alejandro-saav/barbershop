@@ -24,10 +24,17 @@ function getHalfHourIntervals() {
 
   return intervals;
 }
-export default function Fecha({ setTiempo, id_barbero }) {
-  const [horaSeleccionada, setHoraSeleccionada] = useState(null);
-  const [diaSeleccionado, setDiaSeleccionado] = useState(null);
-  const [horas, setHoras] = useState(getHalfHourIntervals());
+
+const horas = getHalfHourIntervals();
+export default function Fecha({
+  setTiempo,
+  id_barbero,
+  diaSeleccionado,
+  setDiaSeleccionado,
+  horaSeleccionada,
+  setHoraSeleccionada,
+}) {
+  const [horasOcupadas, setHorasOcupadas] = useState([]);
   const diaDeLaSemana = new Date().getDay();
   const diaNumero = new Date().getDate();
   const mesHoy = new Date().getMonth();
@@ -70,12 +77,20 @@ export default function Fecha({ setTiempo, id_barbero }) {
 
     if (response.ok) {
       const data = await response.json();
-      setHoras((prev) => console.log(prev));
+      setHorasOcupadas(
+        data.data.map((item) =>
+          formatTime(
+            Number(item.hora_cita.split(":")[0]),
+            Number(item.hora_cita.split(":")[1])
+          )
+        )
+      );
       console.log("Disponibilidad de horarios:", data.data);
     } else {
       console.log("Error al consultar la disponibilidad de horarios");
     }
   }
+  console.log("Horas ocupadas:", horasOcupadas);
   return (
     <div className={`${roboto.className} mt-4 font-thin`}>
       <h1 className="text-white text-sm">
@@ -87,13 +102,13 @@ export default function Fecha({ setTiempo, id_barbero }) {
             className={`flex flex-col justify-center items-center cursor-pointer group`}
             key={index}
             onClick={() => {
-              setDiaSeleccionado(index);
+              setDiaSeleccionado(item);
               consultarDisponibilidadHorarios(id_barbero, diaNumero + index);
             }}
           >
             <div
               className={`w-16 cursor-pointer text-center py-4 rounded-full mb-2 shadow-sm shadow-black  group-hover:bg-[#262626]  ${
-                index === diaSeleccionado ? "bg-orange-500" : "bg-[#151515]"
+                item === diaSeleccionado ? "bg-orange-500" : "bg-[#151515]"
               }`}
             >
               {diaNumero + index}
@@ -110,29 +125,30 @@ export default function Fecha({ setTiempo, id_barbero }) {
         }`}
       >
         {horas.map((item, index) => {
-          return (
-            <div
-              className={`w-full border-2 px-4 py-4 shadow-md shadow-black mb-2 cursor-pointer flex justify-between hover:bg-[#181818] ${
-                index === horaSeleccionada
-                  ? "bg-[#181818] border-orange-300"
-                  : "border-orange-500 bg-[#242424]"
-              }`}
-              key={index}
-              onClick={() => {
-                setHoraSeleccionada(index);
-                setTiempo(item);
-              }}
-            >
-              <span>{item}</span>
-              <div className="mr-5">
-                <input
-                  type="checkbox"
-                  readOnly
-                  checked={index === horaSeleccionada}
-                />
+          if (!horasOcupadas.includes(item))
+            return (
+              <div
+                className={`w-full border-2 px-4 py-4 shadow-md shadow-black mb-2 cursor-pointer flex justify-between hover:bg-[#181818] ${
+                  item === horaSeleccionada
+                    ? "bg-[#181818] border-orange-300"
+                    : "border-orange-500 bg-[#242424]"
+                }`}
+                key={index}
+                onClick={() => {
+                  setHoraSeleccionada(item);
+                  setTiempo(item);
+                }}
+              >
+                <span>{item}</span>
+                <div className="mr-5">
+                  <input
+                    type="checkbox"
+                    readOnly
+                    checked={item === horaSeleccionada}
+                  />
+                </div>
               </div>
-            </div>
-          );
+            );
         })}
       </div>
     </div>

@@ -3,13 +3,26 @@ import axios from "axios";
 import { useState, useRef } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
-export default function Home() {
+export default function Home({
+  diaSeleccionado,
+  horaSeleccionada,
+  id_barbero,
+  servicios,
+  checkedItems,
+}) {
   // const emailRef = useRef();
   const { executeRecaptcha } = useGoogleReCaptcha();
+  checkedItems.map((item, index) => {
+    if (item) {
+      console.log(servicios[index]);
+    }
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmit("");
+    const referencia = e.target[0].value;
+    const email = e.target[1].value;
 
     if (!executeRecaptcha) {
       console.log("not available to execute recaptcha");
@@ -45,7 +58,11 @@ export default function Home() {
           "Content-Type": "application/json",
         },
       });
-      console.log(emailResponse);
+      if (emailResponse.ok) {
+        /// SEND DATA TO DB
+        /// Data needed email, day and hour, id_barbero, referencia_pago, servicios
+        const datosCita = { email };
+      }
     } else {
       setSubmit("Error! intenta de nuevo");
     }
