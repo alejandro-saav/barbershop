@@ -1,0 +1,2 @@
+!--- Personal notes of problems and solutions encounter during the developing of this app
+# For fetching data on a client component i had to create a route which consist of creating a folder on the app folder and from here i create another folder which will be part of the route for example "fetchServicios" and on this folder i create a file called route which will handle the request. For fetching data to my database i have created some function in another folder and in the route file i imported them called the function and send the data through the response.

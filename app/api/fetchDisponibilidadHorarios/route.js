@@ -1,17 +1,41 @@
 import { fetchDisponibilidadHorarios } from "@/app/lib/data";
 
-export async function GET(res) {
+export async function GET(request) {
   try {
-    const { data } = await fetchDisponibilidadHorarios();
-    return new Response(JSON.stringify({ data }), {
+    const { searchParams } = new URL(request.url);
+    const id_barbero = searchParams.get("id_barbero");
+    const diaSeleccionado = searchParams.get("diaSeleccionado");
+
+    if (!id_barbero || !diaSeleccionado) {
+      return new Response(JSON.stringify({ message: "Parametros invalidos" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    const horariosOcupados = await fetchDisponibilidadHorarios(
+      id_barbero,
+      diaSeleccionado
+    );
+    console.log(horariosOcupados);
+
+    return new Response(JSON.stringify({ data: horariosOcupados }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
       },
     });
-    // res.status(200).json.st({ servicios, barberos });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error sending email." });
+    console.log("Error al consultar disponibilidad de horarios:", error);
+    return new Response(
+      JSON.stringify({
+        message: "Error al consultar disponibilidad de horarios.",
+      }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
 }

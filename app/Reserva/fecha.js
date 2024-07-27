@@ -1,10 +1,33 @@
 "use client";
 import { roboto } from "../fonts";
 import { useState } from "react";
+
+function formatTime(hour, minutes) {
+  const period = hour >= 12 ? "PM" : "AM";
+  const formattedHour = hour % 12 === 0 ? 12 : hour % 12; // Convert to 12-hour format
+  const formattedMinutes = minutes.toString().padStart(2, "0");
+  return `${formattedHour}:${formattedMinutes}${period}`;
+}
+
+function getHalfHourIntervals() {
+  const startHour = 10; // 10 AM
+  const endHour = 21; // 9 PM (21 in 24-hour format)
+  const intervals = [];
+
+  for (let hour = startHour; hour <= endHour; hour++) {
+    intervals.push(formatTime(hour, 0)); // Add the full hour (e.g., 10:00 AM)
+    if (hour !== endHour) {
+      // Add the half-hour (e.g., 10:30 AM), but not after the last full hour (9 PM)
+      intervals.push(formatTime(hour, 30));
+    }
+  }
+
+  return intervals;
+}
 export default function Fecha({ setTiempo, id_barbero }) {
-  console.log(id_barbero);
   const [horaSeleccionada, setHoraSeleccionada] = useState(null);
   const [diaSeleccionado, setDiaSeleccionado] = useState(null);
+  const [horas, setHoras] = useState(getHalfHourIntervals());
   const diaDeLaSemana = new Date().getDay();
   const diaNumero = new Date().getDate();
   const mesHoy = new Date().getMonth();
@@ -36,31 +59,23 @@ export default function Fecha({ setTiempo, id_barbero }) {
   for (let i = 0; i <= 5; i++) {
     siguientesCincoDias.push(dias[(diaDeLaSemana + i) % 7]);
   }
+  // const horas = getHalfHourIntervals();
+  async function consultarDisponibilidadHorarios(id_barbero, diaSeleccionado) {
+    const response = await fetch(
+      `/api/fetchDisponibilidadHorarios?${new URLSearchParams({
+        id_barbero,
+        diaSeleccionado,
+      })}`
+    );
 
-  function formatTime(hour, minutes) {
-    const period = hour >= 12 ? "PM" : "AM";
-    const formattedHour = hour % 12 === 0 ? 12 : hour % 12; // Convert to 12-hour format
-    const formattedMinutes = minutes.toString().padStart(2, "0");
-    return `${formattedHour}:${formattedMinutes}${period}`;
-  }
-
-  function getHalfHourIntervals() {
-    const startHour = 10; // 10 AM
-    const endHour = 21; // 9 PM (21 in 24-hour format)
-    const intervals = [];
-
-    for (let hour = startHour; hour <= endHour; hour++) {
-      intervals.push(formatTime(hour, 0)); // Add the full hour (e.g., 10:00 AM)
-      if (hour !== endHour) {
-        // Add the half-hour (e.g., 10:30 AM), but not after the last full hour (9 PM)
-        intervals.push(formatTime(hour, 30));
-      }
+    if (response.ok) {
+      const data = await response.json();
+      setHoras((prev) => console.log(prev));
+      console.log("Disponibilidad de horarios:", data.data);
+    } else {
+      console.log("Error al consultar la disponibilidad de horarios");
     }
-
-    return intervals;
   }
-  const horas = getHalfHourIntervals();
-  function consultarDisponibilidadHorarios(id_barbero, diaSeleccionado) {}
   return (
     <div className={`${roboto.className} mt-4 font-thin`}>
       <h1 className="text-white text-sm">
