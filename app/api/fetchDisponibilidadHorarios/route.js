@@ -4,9 +4,9 @@ export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const id_barbero = searchParams.get("id_barbero");
-    const diaSeleccionado = searchParams.get("diaSeleccionado");
+    const fechaSeleccionada = searchParams.get("fechaSeleccionada");
 
-    if (!id_barbero || !diaSeleccionado) {
+    if (!id_barbero || !fechaSeleccionada) {
       return new Response(JSON.stringify({ message: "Parametros invalidos" }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
@@ -14,7 +14,7 @@ export async function GET(request) {
     }
     const horariosOcupados = await fetchDisponibilidadHorarios(
       id_barbero,
-      diaSeleccionado
+      fechaSeleccionada
     );
     console.log(horariosOcupados);
 

@@ -33,10 +33,11 @@ export default function Fecha({
   setDiaSeleccionado,
   horaSeleccionada,
   setHoraSeleccionada,
+  servicios,
 }) {
   const [horasOcupadas, setHorasOcupadas] = useState([]);
   const diaDeLaSemana = new Date().getDay();
-  const diaNumero = new Date().getDate();
+  const diaNumero = new Date();
   const mesHoy = new Date().getMonth();
   const ano = new Date().getFullYear();
   const meses = [
@@ -67,18 +68,22 @@ export default function Fecha({
     siguientesCincoDias.push(dias[(diaDeLaSemana + i) % 7]);
   }
   // const horas = getHalfHourIntervals();
-  async function consultarDisponibilidadHorarios(id_barbero, diaSeleccionado) {
+  async function consultarDisponibilidadHorarios(
+    id_barbero,
+    fechaSeleccionada
+  ) {
     const response = await fetch(
       `/api/fetchDisponibilidadHorarios?${new URLSearchParams({
         id_barbero,
-        diaSeleccionado,
+        fechaSeleccionada,
       })}`
     );
 
     if (response.ok) {
-      const data = await response.json();
+      const { data } = await response.json();
+      console.log("XD");
       setHorasOcupadas(
-        data.data.map((item) =>
+        data.map((item) =>
           formatTime(
             Number(item.hora_cita.split(":")[0]),
             Number(item.hora_cita.split(":")[1])
@@ -90,7 +95,20 @@ export default function Fecha({
       console.log("Error al consultar la disponibilidad de horarios");
     }
   }
-  console.log("Horas ocupadas:", horasOcupadas);
+
+  function obtenerCincoDiasSiguientes(numeroSiguiente) {
+    const fechaHoy = new Date();
+    fechaHoy.setDate(fechaHoy.getDate() + numeroSiguiente);
+    return fechaHoy.getDate();
+  }
+  function obtenerFechaDiaSeleccionado(indexSeleccionado) {
+    const fechaHoy = new Date();
+    fechaHoy.setDate(fechaHoy.getDate() + indexSeleccionado);
+    const formatedDate = `${fechaHoy.getFullYear()}-${
+      fechaHoy.getMonth() + 1
+    }-${fechaHoy.getDate()}`;
+    return formatedDate;
+  }
   return (
     <div className={`${roboto.className} mt-4 font-thin`}>
       <h1 className="text-white text-sm">
@@ -102,16 +120,21 @@ export default function Fecha({
             className={`flex flex-col justify-center items-center cursor-pointer group`}
             key={index}
             onClick={() => {
-              setDiaSeleccionado(item);
-              consultarDisponibilidadHorarios(id_barbero, diaNumero + index);
+              setDiaSeleccionado(obtenerCincoDiasSiguientes(index));
+              consultarDisponibilidadHorarios(
+                id_barbero,
+                obtenerFechaDiaSeleccionado(index)
+              );
             }}
           >
             <div
               className={`w-16 cursor-pointer text-center py-4 rounded-full mb-2 shadow-sm shadow-black  group-hover:bg-[#262626]  ${
-                item === diaSeleccionado ? "bg-orange-500" : "bg-[#151515]"
+                obtenerCincoDiasSiguientes(index) === diaSeleccionado
+                  ? "bg-orange-500"
+                  : "bg-[#151515]"
               }`}
             >
-              {diaNumero + index}
+              {obtenerCincoDiasSiguientes(index)}
             </div>
             <div className="text-orange-500 font-bold group-hover:text-orange-700">
               {item.slice(0, 3)}

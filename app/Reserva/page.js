@@ -120,6 +120,7 @@ export default function Reserva() {
                 setDiaSeleccionado={setDiaSeleccionado}
                 horaSeleccionada={horaSeleccionada}
                 setHoraSeleccionada={setHoraSeleccionada}
+                servicios={servicios}
               />
             )}
             {pestana === 3 && (

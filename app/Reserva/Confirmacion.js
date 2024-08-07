@@ -2,6 +2,7 @@
 import axios from "axios";
 import { useState, useRef } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { cambiarFormato12a24 } from "./UtilityFunctions";
 
 export default function Home({
   diaSeleccionado,
@@ -12,17 +13,53 @@ export default function Home({
 }) {
   // const emailRef = useRef();
   const { executeRecaptcha } = useGoogleReCaptcha();
-  checkedItems.map((item, index) => {
-    if (item) {
-      console.log(servicios[index]);
-    }
-  });
-
+  const serviciosIds = servicios
+    .filter((item, index) => checkedItems[index] === true)
+    .map((item) => item.id);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmit("");
     const referencia = e.target[0].value;
     const email = e.target[1].value;
+
+    ///* PA BORRAR DESPUES
+    const hora = cambiarFormato12a24(horaSeleccionada);
+    const now = new Date();
+    const year = now.getFullYear();
+    const diaHoy = now.getDate();
+    let month = now.getMonth() + 1;
+    if (diaSeleccionado >= 1 && diaSeleccionado <= 4 && diaHoy > 4) {
+      month += 1;
+    }
+    const fecha = `${year}-${String(month).padStart(2, "0")}-${String(
+      diaSeleccionado
+    ).padStart(2, "0")} ${hora}`;
+    const datosCita = {
+      email,
+      fecha,
+      id_barbero,
+      referencia,
+      servicios: serviciosIds,
+    };
+    async function insertarNuevaCita() {
+      try {
+        const response = await fetch("/api/insertarCita", {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify(datosCita),
+        });
+        if (response.ok) {
+          const { citaId } = await response.json();
+          console.log(citaId);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    insertarNuevaCita();
+    ///*-------------------------------------------------------
 
     if (!executeRecaptcha) {
       console.log("not available to execute recaptcha");
@@ -61,7 +98,15 @@ export default function Home({
       if (emailResponse.ok) {
         /// SEND DATA TO DB
         /// Data needed email, day and hour, id_barbero, referencia_pago, servicios
-        const datosCita = { email };
+        // const hora = cambiarFormato12a24(horaSeleccionada);
+        // const now = new Date();
+        // const year = now.getFullYear();
+        // const month = now.getMonth() + 1;
+        // const timestampString = `${year}-${String(month).padStart(
+        //   2,
+        //   "0"
+        // )}-${String(diaSeleccionado).padStart(2, "0")} ${hora}`;
+        // const datosCita = { email };
       }
     } else {
       setSubmit("Error! intenta de nuevo");

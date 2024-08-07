@@ -69,3 +69,23 @@ export function calcularTiempoEnHorasMinutos(minutos) {
   }
   return strFinal;
 }
+
+export function cambiarFormato12a24(tiempo) {
+  let finalTime;
+  const horas = Number(tiempo.slice(0, 2));
+  const timeType = tiempo.slice(-2);
+  if (timeType === "AM") {
+    if (horas < 12) {
+      finalTime = tiempo.slice(0, 5);
+    } else {
+      finalTime = `00${tiempo.slice(2, 5)}`;
+    }
+  } else if (timeType === "PM") {
+    if (horas == 12) {
+      finalTime = tiempo.slice(0, 5);
+    } else {
+      finalTime = `${horas + 12}${tiempo.slice(2, 5)}`;
+    }
+  }
+  return finalTime;
+}
