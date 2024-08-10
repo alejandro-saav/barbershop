@@ -4,22 +4,20 @@ import { useState } from "react";
 import { IoIosPeople } from "react-icons/io";
 import { CldImage } from "next-cloudinary";
 
-export default function Barbero({ barberos, setCheckedBarber }) {
-  const [barberoSeleccionado, setBarberoSeleccionado] = useState(null);
+export default function Barbero({ barberos, checkedBarber, setCheckedBarber }) {
   return (
     <div className="grid grid-cols-3 gap-y-6 w-full mt-4">
       {barberos.map((item, index) => {
-        const estaSeleccionada = index === barberoSeleccionado;
         return (
           <div
             className={`flex flex-col justify-center items-center shadow-md rounded-lg p-2 shadow-slate-800 mx-2 cursor-pointer hover:bg-slate-950 group select-none ${
-              estaSeleccionada
+              checkedBarber != "" &&
+              item.id_barbero === checkedBarber[0].id_barbero
                 ? "text-orange-500 font-bold border-2 border-orange-500 bg-slate-950"
                 : "bg-slate-900"
             }`}
             key={index}
             onClick={() => {
-              setBarberoSeleccionado(index);
               setCheckedBarber([item]);
             }}
           >

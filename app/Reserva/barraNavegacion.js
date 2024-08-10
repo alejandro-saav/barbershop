@@ -3,6 +3,8 @@ export default function BarraNavegacion({
   pestana,
   setPestana,
   setCheckedBarber,
+  setDiaSeleccionado,
+  setHoraSeleccionada,
 }) {
   return (
     <div>
@@ -12,6 +14,8 @@ export default function BarraNavegacion({
           onClick={() => {
             setPestana(0);
             setCheckedBarber("");
+            setDiaSeleccionado(null);
+            setHoraSeleccionada(null);
           }}
         >
           Servicios {" >"}
@@ -22,7 +26,11 @@ export default function BarraNavegacion({
               ? "text-orange-500 opacity-100 cursor-pointer"
               : "text-orange-200 opacity-40 cursor-auto"
           }`}
-          onClick={() => pestana > 0 && setPestana(1)}
+          onClick={() => {
+            setDiaSeleccionado(null);
+            setHoraSeleccionada(null);
+            pestana > 0 && setPestana(1);
+          }}
         >
           Barbero {" >"}
         </li>

@@ -32,7 +32,7 @@ export async function fetchDisponibilidadHorarios(
   noStore();
   try {
     const horariosOcupados =
-      await sql`SELECT TO_CHAR(c.fecha_cita, 'HH24:MI') AS hora_cita, cs.id_servicio FROM citas c JOIN citas_servicios cs ON c.id = cs.id_cita WHERE c.id_barbero = ${id_barbero} AND c.fecha_cita::date = ${fechaSeleccionada};`;
+      await sql`SELECT c.id, TO_CHAR(c.fecha_cita, 'HH24:MI') AS hora_cita, cs.id_servicio FROM citas c JOIN citas_servicios cs ON c.id = cs.id_cita WHERE c.id_barbero = ${id_barbero} AND c.fecha_cita::date = ${fechaSeleccionada};`;
     // await sql`SELECT TO_CHAR(fecha_cita, 'HH24:MI') AS hora_cita FROM citas WHERE id_barbero = ${id_barbero} AND EXTRACT(DAY FROM fecha_cita) = ${fechaSeleccionada};`;
     return horariosOcupados.rows;
   } catch (error) {

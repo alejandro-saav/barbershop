@@ -16,7 +16,6 @@ export async function GET(request) {
       id_barbero,
       fechaSeleccionada
     );
-    console.log(horariosOcupados);
 
     return new Response(JSON.stringify({ data: horariosOcupados }), {
       status: 200,

@@ -4,16 +4,18 @@ import { MdOutlineDateRange, MdOutlineAccessTime } from "react-icons/md";
 import Image from "next/image";
 export default function PanelDerecho({
   tiempo,
+  pestana,
   setPestana,
   servicios,
   checkedItems,
   checkedBarber,
   endTime,
   tiempoEnHorasMinutos,
+  diaSeleccionado,
+  horaSeleccionada,
 }) {
-  const diaDeLaSemana = new Date().getDay();
-  const diaNumero = new Date().getDate();
   const mesHoy = new Date().getMonth();
+  const ano = new Date().getFullYear();
   const dias = [
     "Domingo",
     "Lunes",
@@ -37,6 +39,9 @@ export default function PanelDerecho({
     "Noviembre",
     "Diciembre",
   ];
+  const diaDeLaSemana = new Date(
+    `${mesHoy + 1} ${diaSeleccionado}, ${ano}`
+  ).getDay();
   return (
     <div
       className={`${roboto.className} grow w-1/2 flex justify-start h-[27rem] `}
@@ -55,7 +60,7 @@ export default function PanelDerecho({
           <div className="flex text-sm gap-2">
             <MdOutlineDateRange />
             <span>
-              {dias[diaDeLaSemana]} {diaNumero} {meses[mesHoy]}
+              {dias[diaDeLaSemana]} {diaSeleccionado} {meses[mesHoy]}
             </span>
           </div>
           <div className="flex text-sm gap-2">
@@ -89,9 +94,24 @@ export default function PanelDerecho({
           })}
         </div>
         <button
-          onClick={() =>
-            setPestana((prev) => (prev === 3 ? (prev = 0) : prev + 1))
-          }
+          onClick={() => {
+            if (checkedItems.every((item) => item === false)) {
+              alert("Seleccione un servicio para continuar");
+              return;
+            }
+            if (checkedBarber == "" && pestana === 1) {
+              alert("Seleccione un especialista para continuar");
+              return;
+            }
+            if (
+              (diaSeleccionado === null || horaSeleccionada === null) &&
+              pestana === 2
+            ) {
+              alert("Seleccione dia y hora validos.");
+              return;
+            }
+            setPestana((prev) => (prev === 3 ? (prev = 0) : prev + 1));
+          }}
           className="w-full px-8 py-2 mt-2 bg-orange-600 rounded-md text-lg font-bold hover:bg-orange-700 transition-all duration-200"
         >
           Siguiente {"->"}
