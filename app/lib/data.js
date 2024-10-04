@@ -137,3 +137,54 @@ export async function insertarCita(datosCita) {
     await client.release();
   }
 }
+
+export async function checkAndInsertUser(id, username, password) {
+  try {
+    // Check if the user exists
+    console.log("ID", id);
+    const result = await sql`
+      SELECT id FROM "user"
+      WHERE correo = ${username}
+    `;
+    console.log("RESULT:", result);
+
+    if (result.rows.length > 0) {
+      // User exists
+      return {
+        success: false,
+        message: "User already exists",
+        userId: result.rows[0].id,
+      };
+    } else {
+      // User doesn't exist, insert new user
+      const insertResult = await sql`
+        INSERT INTO "user" (id, correo, password_hash)
+        VALUES (${id}, ${username}, ${password})
+        RETURNING id
+      `;
+
+      return {
+        success: true,
+        message: "New user inserted",
+        userId: insertResult.rows[0].id,
+      };
+    }
+  } catch (error) {
+    console.error("Error checking/inserting user:", error);
+    return { success: false, message: "Error processing request" };
+  }
+}
+
+export async function checkUserExist(correo) {
+  try {
+    const result = await sql`SELECT * FROM "user" WHERE correo = ${correo}`;
+    console.log(result);
+    if (result.rows.length > 0) {
+      return result.rows[0];
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.log("ERROR YO KSE: ", error);
+  }
+}
