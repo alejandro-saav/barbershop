@@ -1,6 +1,12 @@
 import React from "react";
-
-export default function Dashboard() {
+import getUser from "./getUser";
+import { redirect } from "next/navigation";
+export default async function Dashboard() {
+  const user = await getUser();
+  if (!user) {
+    redirect("/Login");
+  }
+  console.log("dashboard user log:", user);
   return (
     <div className="bg-gray-100 min-h-screen text-black">
       <header className="bg-blue-600 text-white p-4">

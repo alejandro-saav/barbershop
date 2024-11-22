@@ -2,6 +2,7 @@ import Image from "next/image";
 import { CiFacebook } from "react-icons/ci";
 import { FaInstagram } from "react-icons/fa";
 import { TbBrandTiktok } from "react-icons/tb";
+import Loginstatus from "./loginstatus";
 import { inter, roboto } from "./fonts";
 import "./globals.css";
 import logoIMG from "@/public/images/download3.png";
@@ -97,6 +98,7 @@ export default function RootLayout({ children }) {
               );
             })}
           </ul>
+          <Loginstatus />
         </div>
         {children}
       </body>

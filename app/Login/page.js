@@ -59,6 +59,7 @@ async function loginAccess(formData) {
   const correo = formData.get("correo");
   const password = formData.get("password");
   if (typeof correo !== "string" || correo.length < 3 || correo.length > 31) {
+    console.log("primer error");
     return {
       error: "Usuario no valido",
     };
@@ -68,6 +69,7 @@ async function loginAccess(formData) {
     password.length < 6 ||
     password.length > 255
   ) {
+    console.log("Contraseña mal");
     return {
       error: "Contraseña no valida",
     };
