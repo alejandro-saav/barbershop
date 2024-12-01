@@ -18,24 +18,24 @@ export default function Loginstatus() {
   const [user, setUser] = useState(undefined);
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleLogout = async () => {
-    const res = await fetch("/api/logout");
-    if (res.ok) {
-      setUser(undefined);
-      router.push("/");
-    } else {
-      console.error("Failed to log out");
-    }
-  };
+  // const handleLogout = async () => {
+  //   const res = await fetch("/api/logout");
+  //   if (res.ok) {
+  //     setUser(undefined);
+  //     router.push("/");
+  //   } else {
+  //     console.error("Failed to log out");
+  //   }
+  // };
 
-  useEffect(() => {
-    async function fetchUser() {
-      const result = await fetchUserSession();
-      console.log(result);
-      setUser(result);
-    }
-    fetchUser();
-  }, user);
+  // useEffect(() => {
+  //   async function fetchUser() {
+  //     const result = await fetchUserSession();
+  //     console.log(result);
+  //     setUser(result);
+  //   }
+  //   fetchUser();
+  // }, user);
 
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
