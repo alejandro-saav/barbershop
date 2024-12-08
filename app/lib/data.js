@@ -138,35 +138,40 @@ export async function insertarCita(datosCita) {
   }
 }
 
-export async function checkAndInsertUser(id, username, password) {
+export async function checkAndInsertUser({ nombre, correo, password, salt }) {
+  // noStore();
+  console.log(
+    "CHECKANDINSERUSER FUNCTION CALLING:",
+    nombre,
+    correo,
+    password,
+    salt
+  );
   try {
     // Check if the user exists
-    console.log("ID", id);
     const result = await sql`
-      SELECT id FROM "user"
-      WHERE correo = ${username}
+      SELECT correo FROM "user"
+      WHERE correo = ${correo}
     `;
     console.log("RESULT:", result);
-
     if (result.rows.length > 0) {
       // User exists
       return {
         success: false,
         message: "User already exists",
-        userId: result.rows[0].id,
       };
     } else {
       // User doesn't exist, insert new user
       const insertResult = await sql`
-        INSERT INTO "user" (id, correo, password_hash)
-        VALUES (${id}, ${username}, ${password})
+        INSERT INTO "user" (correo, password_hash, role, salt, nombre)
+        VALUES (${correo}, ${password}, 'user', ${salt}, ${nombre})
         RETURNING id
       `;
 
       return {
         success: true,
         message: "New user inserted",
-        userId: insertResult.rows[0].id,
+        userId: insertResult.rows[0],
       };
     }
   } catch (error) {
@@ -178,13 +183,14 @@ export async function checkAndInsertUser(id, username, password) {
 export async function checkUserExist(correo) {
   try {
     const result = await sql`SELECT * FROM "user" WHERE correo = ${correo}`;
-    console.log(result);
+    console.log("checkUserExist result:", result.rows);
     if (result.rows.length > 0) {
-      return result.rows[0];
+      return { data: result.rows[0], success: true };
     } else {
-      return null;
+      return { error: "Usuario ya existe.", success: false };
     }
   } catch (error) {
-    console.log("ERROR YO KSE: ", error);
+    console.log("Database error: ", error);
+    return { error: null, success: false };
   }
 }

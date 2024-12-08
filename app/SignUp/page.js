@@ -2,32 +2,52 @@
 import { roboto } from "../fonts";
 import { useState } from "react";
 import { GoAlert } from "react-icons/go";
+import { useRouter } from "next/navigation";
+import { useUser } from "../lib/userContext";
 export default function SignUp() {
   const [disbledButton, setDisabledButton] = useState(true);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const { setUser } = useUser();
   async function handleSignUp(e) {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-    const nombre = e.target[0].value;
-    const correo = e.target[1].value;
-    const password = e.target[2].value;
-    const passwordConfirm = e.target[3].value;
-    if (password != passwordConfirm) {
-      setError("Las contraseñas no coinciden, intenta otra vez");
+    try {
+      setLoading(true);
+      setError(null);
+      const nombre = e.target[0].value;
+      const correo = e.target[1].value;
+      const password = e.target[2].value;
+      const passwordConfirm = e.target[3].value;
+      if (password != passwordConfirm) {
+        setError("Las contraseñas no coinciden, intenta otra vez");
+        setLoading(false);
+        return;
+      }
+      const res = await fetch("/api/registerUser", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ nombre, correo, password }),
+      });
+      const response = await res.json();
+      if (response.status === 201) {
+        setUser(response.user);
+        if (response.user.role == "user") {
+          router.push("/Historial");
+        } else {
+          router.push("/dashboard");
+        }
+      } else {
+        setError("response.message");
+      }
+    } catch (error) {
+      console.error("Sign up error:", error);
+      setError("Un error inesperado ha ocurrido. Por favor intenta de nuevo.");
+    } finally {
       setLoading(false);
-      return;
     }
-    const res = await fetch("/api/registerUser", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({ nombre, correo, password }),
-    });
-    console.log(res);
-    setLoading(false);
   }
   return (
     <div className="w-screen flex justify-center mt-11">

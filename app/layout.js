@@ -7,6 +7,10 @@ import { inter, roboto } from "./fonts";
 import "./globals.css";
 import logoIMG from "@/public/images/download3.png";
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { getUserDataFromCookies } from "@/app/lib/tokenManagement";
+import { redirect } from "next/navigation";
+import { UserProvider } from "@/app/lib/userContext";
 
 export const metadata = {
   title: "BarberShop",
@@ -14,8 +18,29 @@ export const metadata = {
     "Barbershop store where you can find everything you need for your barbershop.",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
   console.log("HELLO");
+  // const cookieStore = await cookies();
+  // const accessTokenCookie = cookieStore.get("access_token");
+  // let userCookieData = null;
+  // if (accessTokenCookie) {
+  //   userCookieData = await verifyAccessToken(accessTokenCookie.value);
+  //   delete userCookieData.exp;
+  //   delete userCookieData.userId;
+  // } else {
+  //   const refreshTokenCookie = cookieStore.get("refresh_token");
+  //   if (refreshTokenCookie) {
+  //     userCookieData = await verifyRefreshToken(refreshTokenCookie.value);
+  //     delete userCookieData.exp;
+  //     delete userCookieData.userId;
+  //     const { accessToken, refreshToken } = await generateTokens(
+  //       userCookieData
+  //     );
+  //     setTokens(accessToken, refreshToken);
+  //   }
+  // }
+  // console.log(user);
+  const userCookieData = await getUserDataFromCookies();
   const lista = [
     "Inicio",
     "Servicios",
@@ -42,67 +67,69 @@ export default function RootLayout({ children }) {
   ];
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <div className="w-full h-14 flex justify-around border-b-2 border-amber-400">
-          <Image
-            src={logoIMG}
-            alt="Logo image of the company"
-            className="object-fill rounded-full cursor-pointer h-16 w-28"
-          />
-          <ul className="w-1/3 flex justify-between content-center flex-wrap ml-2 select-none">
-            <li>
-              <Link className="cursor-pointer hover:text-sky-600" href="/">
-                Inicio
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="cursor-pointer hover:text-sky-600"
-                href="/Servicios"
-              >
-                Servicios
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="cursor-pointer hover:text-sky-600"
-                href="/Productos"
-              >
-                Productos
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="cursor-pointer hover:text-sky-600"
-                href="/Reserva"
-              >
-                Reservar Cita
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="cursor-pointer hover:text-sky-600"
-                href="/Contactanos"
-              >
-                Contactanos
-              </Link>
-            </li>
-          </ul>
-          <ul className="flex justify-between content-center flex-wrap gap-4">
-            {redes.map((item, index) => {
-              return (
-                <li className={item.class} key={index}>
-                  <a target="_blank" href={item.link}>
-                    {item.icon}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-          <Loginstatus />
-        </div>
-        {children}
-      </body>
+      <UserProvider>
+        <body className={inter.className}>
+          <div className="w-full h-14 flex justify-around border-b-2 border-amber-400">
+            <Image
+              src={logoIMG}
+              alt="Logo image of the company"
+              className="object-fill rounded-full cursor-pointer h-16 w-28"
+            />
+            <ul className="w-1/3 flex justify-between content-center flex-wrap ml-2 select-none">
+              <li>
+                <Link className="cursor-pointer hover:text-sky-600" href="/">
+                  Inicio
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="cursor-pointer hover:text-sky-600"
+                  href="/Servicios"
+                >
+                  Servicios
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="cursor-pointer hover:text-sky-600"
+                  href="/Productos"
+                >
+                  Productos
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="cursor-pointer hover:text-sky-600"
+                  href="/Reserva"
+                >
+                  Reservar Cita
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="cursor-pointer hover:text-sky-600"
+                  href="/Contactanos"
+                >
+                  Contactanos
+                </Link>
+              </li>
+            </ul>
+            <ul className="flex justify-between content-center flex-wrap gap-4">
+              {redes.map((item, index) => {
+                return (
+                  <li className={item.class} key={index}>
+                    <a target="_blank" href={item.link}>
+                      {item.icon}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+            <Loginstatus userCookieData={userCookieData} />
+          </div>
+          {children}
+        </body>
+      </UserProvider>
     </html>
   );
 }

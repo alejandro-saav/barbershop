@@ -1,12 +1,23 @@
 import React from "react";
-import getUser from "./getUser";
 import { redirect } from "next/navigation";
+import { verifyAccessToken } from "../lib/tokenManagement";
+import { cookies } from "next/headers";
 export default async function Dashboard() {
-  const user = await getUser();
-  if (!user) {
+  const cookieStore = await cookies();
+  const accessTokenCookie = cookieStore.get("access_token");
+  if (!accessTokenCookie) {
     redirect("/Login");
+    return null;
   }
-  console.log("dashboard user log:", user);
+  const user = await verifyAccessToken(accessTokenCookie.value);
+  if (!user || user.error) {
+    redirect("/Login");
+    return null;
+  }
+  if (user.role == "user") {
+    redirect("/Historial");
+    return null;
+  }
   return (
     <div className="bg-gray-100 min-h-screen text-black">
       <header className="bg-blue-600 text-white p-4">

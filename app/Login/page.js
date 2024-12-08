@@ -1,19 +1,54 @@
 "use client";
 import { roboto } from "../fonts";
 import { useState } from "react";
+import { GoAlert } from "react-icons/go";
+import { useRouter } from "next/navigation";
+import { useUser } from "../lib/userContext";
+
 export default function Login() {
-  const [disbledButton, setDisabledButton] = useState(false);
   const [error, setError] = useState(null);
-  function handleLogin(e) {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const { user, setUser } = useUser();
+  console.log(user);
+  async function handleLogin(e) {
     e.preventDefault();
-    const correo = e.target[0].value;
-    const password = e.target[1].value;
+
+    try {
+      setError(null);
+      setLoading(true);
+      const email = e.target[0].value;
+      const password = e.target[1].value;
+      const res = await fetch("/api/loginUser", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const response = await res.json();
+      if (response.status === 201) {
+        setUser(response.user);
+        if (response.user.role == "user") {
+          router.push("/Historial");
+        } else {
+          router.push("/dashboard");
+        }
+      } else {
+        setError(response.message);
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("Un error inesperado ha ocurrido. Por favor intenta de nuevo.");
+    } finally {
+      setLoading(false);
+    }
   }
   return (
     <div className="w-screen flex justify-center mt-20">
       <div className="">
         <form
-          className="bg-[#181818] border-2 border-yellow-500 p-6 h-[23rem] flex flex-col gap-5 rounded-lg shadow-orange-600 shadow-inner"
+          className="bg-[#181818] border-2 border-yellow-500 p-6 flex flex-col gap-5 rounded-lg shadow-orange-600 shadow-inner"
           onSubmit={handleLogin}
         >
           <h1
@@ -47,14 +82,33 @@ export default function Login() {
               className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-md font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50 focus:placeholder:opacity-100"
             />
           </div>
-          {error ? <p>{error}</p> : ""}
-          <button
-            className={`${roboto.className} font-bold text-lg bg-orange-600 hover:bg-orange-700 px-16 py-2 rounded-lg`}
-            type="submit"
-            disabled={disbledButton}
-          >
-            Iniciar Sesion
-          </button>
+          {error && (
+            <p className="text-red-700 flex justify-center items-center gap-4">
+              {" "}
+              <GoAlert className="text-2xl" />
+              {error}
+            </p>
+          )}
+          {!loading ? (
+            <button
+              className={`${roboto.className} font-bold text-lg bg-orange-600 hover:bg-orange-700 px-16 py-2 rounded-lg`}
+              type="submit"
+            >
+              Iniciar Sesion
+            </button>
+          ) : (
+            <button
+              className={`${roboto.className} font-bold text-lg text-black bg-gray-400 px-16 py-2 rounded-lg flex justify-start items-center cursor-not-allowed`}
+              type="submit"
+              disabled
+            >
+              <svg
+                class="animate-spin  h-4 w-4 mr-12 bg-zinc-800"
+                viewBox="0 0 5 5"
+              ></svg>
+              Iniciando Sesion...
+            </button>
+          )}
         </form>
       </div>
     </div>
