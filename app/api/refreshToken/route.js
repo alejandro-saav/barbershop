@@ -7,10 +7,12 @@ import {
 } from "@/app/lib/tokenManagement";
 
 export async function POST(res) {
+  console.log(await res.json());
   try {
     // Get refresh token from cookies
     const cookieStore = await cookies();
     const refreshTokenCookie = cookieStore.get("refresh_token");
+    console.log("COOKIE:", refreshTokenCookie);
 
     if (!refreshTokenCookie) {
       return NextResponse.json({
@@ -21,6 +23,7 @@ export async function POST(res) {
 
     // Verify refresh token
     const payload = await verifyRefreshToken(refreshTokenCookie.value);
+    console.log("payload", payload);
 
     if (!payload || !payload.userId) {
       return NextResponse.json({
@@ -38,6 +41,7 @@ export async function POST(res) {
     return NextResponse.json({
       status: 200,
       message: "Tokens refreshed successfully",
+      userdata: payload,
     });
   } catch (error) {
     console.error(error);

@@ -1,3 +1,4 @@
+"use server";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
@@ -83,25 +84,25 @@ export async function clearTokens() {
 }
 
 //* Get user Data from cookies
-export async function getUserDataFromCookies() {
-  const cookieStore = await cookies();
-  const accessTokenCookie = cookieStore.get("access_token");
-  let userCookieData = null;
-  if (accessTokenCookie) {
-    userCookieData = await verifyAccessToken(accessTokenCookie.value);
-    delete userCookieData.exp;
-    delete userCookieData.userId;
-  } else {
-    const refreshTokenCookie = cookieStore.get("refresh_token");
-    if (refreshTokenCookie) {
-      userCookieData = await verifyRefreshToken(refreshTokenCookie.value);
-      delete userCookieData.exp;
-      delete userCookieData.userId;
-      const { accessToken, refreshToken } = await generateTokens(
-        userCookieData
-      );
-      setTokens(accessToken, refreshToken);
-    }
-  }
-  return userCookieData;
-}
+// export async function getUserDataFromCookies() {
+//   const cookieStore = await cookies();
+//   const accessTokenCookie = cookieStore.get("access_token");
+//   let userCookieData = null;
+//   if (accessTokenCookie) {
+//     userCookieData = await verifyAccessToken(accessTokenCookie.value);
+//     delete userCookieData.exp;
+//     delete userCookieData.userId;
+//   } else {
+//     const refreshTokenCookie = cookieStore.get("refresh_token");
+//     if (refreshTokenCookie) {
+//       userCookieData = await verifyRefreshToken(refreshTokenCookie.value);
+//       delete userCookieData.exp;
+//       delete userCookieData.userId;
+//       const { accessToken, refreshToken } = await generateTokens(
+//         userCookieData
+//       );
+//       setTokens(accessToken, refreshToken);
+//     }
+//   }
+//   return userCookieData;
+// }

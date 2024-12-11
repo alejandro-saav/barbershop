@@ -11,6 +11,12 @@ import { cookies } from "next/headers";
 import { getUserDataFromCookies } from "@/app/lib/tokenManagement";
 import { redirect } from "next/navigation";
 import { UserProvider } from "@/app/lib/userContext";
+import {
+  generateTokens,
+  verifyAccessToken,
+  verifyRefreshToken,
+  setTokens,
+} from "@/app/lib/tokenManagement";
 
 export const metadata = {
   title: "BarberShop",
@@ -20,27 +26,33 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   console.log("HELLO");
-  // const cookieStore = await cookies();
-  // const accessTokenCookie = cookieStore.get("access_token");
-  // let userCookieData = null;
-  // if (accessTokenCookie) {
-  //   userCookieData = await verifyAccessToken(accessTokenCookie.value);
-  //   delete userCookieData.exp;
-  //   delete userCookieData.userId;
-  // } else {
-  //   const refreshTokenCookie = cookieStore.get("refresh_token");
-  //   if (refreshTokenCookie) {
-  //     userCookieData = await verifyRefreshToken(refreshTokenCookie.value);
-  //     delete userCookieData.exp;
-  //     delete userCookieData.userId;
-  //     const { accessToken, refreshToken } = await generateTokens(
-  //       userCookieData
-  //     );
-  //     setTokens(accessToken, refreshToken);
-  //   }
-  // }
-  // console.log(user);
-  const userCookieData = await getUserDataFromCookies();
+  const cookieStore = await cookies();
+  const accessTokenCookie = cookieStore.get("access_token");
+  let userCookieData = null;
+  if (accessTokenCookie) {
+    userCookieData = await verifyAccessToken(accessTokenCookie.value);
+    delete userCookieData.exp;
+    delete userCookieData.userId;
+  } else {
+    const refreshTokenCookie = cookieStore.get("refresh_token");
+    if (refreshTokenCookie) {
+      // api call
+      const res = await fetch("http://localhost:3000/api/refreshToken", {
+        method: "POST",
+        cache: "no-store",
+        credentials: "include",
+      });
+      const response = await res.json();
+      console.log("response", response);
+      if (response.status === 200) {
+        userCookieData = response.userdata;
+        delete userCookieData.exp;
+        delete userCookieData.userId;
+      }
+    }
+  }
+  console.log(userCookieData);
+  // const userCookieData = await getUserDataFromCookies();
   const lista = [
     "Inicio",
     "Servicios",
